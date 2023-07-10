@@ -31,3 +31,9 @@ up:
 
 down:
 	docker compose down
+
+migrate:
+	python main.py migrate
+
+dev:
+	python main.py runserver
