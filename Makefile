@@ -25,3 +25,9 @@ hcov:
 	$(cov)
 	coverage html
 	python -m http.server -d .coverage/html-report 5500
+
+up:
+	docker compose up -d
+
+down:
+	docker compose down
