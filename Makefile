@@ -1,5 +1,6 @@
 deps := pip install --no-cache-dir --upgrade pip setuptools
 cov := rm -rf .coverage/; coverage run -m pytest
+read_from_file := pip install --no-cache-dir -r requirements
 
 env:
 	rm -rf venv
@@ -7,15 +8,15 @@ env:
 
 idev:
 	$(deps)
-	pip install --no-cache-dir -r requirements/dev.txt
+	$(read_from_file)/dev.txt
 
 iprod:
 	$(deps)
-	pip install --no-cache-dir -r requirements/prod.txt
+	$(read_from_file)/prod.txt
 
 itest:
 	$(deps)
-	pip install --no-cache-dir -r requirements/test.txt
+	$(read_from_file)/test.txt
 
 cov:
 	$(cov)
