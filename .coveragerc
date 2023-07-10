@@ -1,0 +1,16 @@
+[run]
+omit =
+    *test*
+    main.py
+    *conftest.py
+data_file = .coverage/coverage
+branch = True
+
+[report]
+skip_covered = True
+precision = 2
+fail_under = 80
+
+[html]
+directory = .coverage/html-report
+skip_covered = True
