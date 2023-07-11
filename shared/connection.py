@@ -1,4 +1,4 @@
-from typing import Self
+from contextlib import asynccontextmanager
 
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -11,7 +11,7 @@ from .models import _BaseDeclaration
 
 
 class DBConnectionHandler:
-    db_session: AsyncSession
+    session: AsyncSession
 
     def __init__(self) -> None:
         self._engine = None
@@ -31,23 +31,24 @@ class DBConnectionHandler:
         return self._engine
 
     @property
-    def session_maker(self) -> async_sessionmaker[AsyncEngine]:
+    def session_maker(self) -> async_sessionmaker[AsyncSession]:
         if self._session_maker is None:
             raise ValueError("Session maker is None. Can not proceed.")
         return self._session_maker
-
-    async def __aenter__(self) -> Self:
-        self.db_session = self.session_maker()
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
-        await self.db_session.close_all()
-        del self.db_session
 
     async def execute_ddl(self) -> None:
         async with self.engine.begin() as conn:
             await conn.run_sync(_BaseDeclaration.metadata.drop_all)
             await conn.run_sync(_BaseDeclaration.metadata.create_all)
+
+
+@asynccontextmanager
+async def make_db_session():
+    db_session = database.session_maker()
+    try:
+        yield db_session
+    finally:
+        await db_session.close()
 
 
 database = DBConnectionHandler()

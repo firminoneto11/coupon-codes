@@ -29,7 +29,7 @@ class Coupons(TimeStampedBaseModel):
 
     max_redemption_quota = sa.Column(sa.SmallInteger, nullable=False)
     minimum_purchase_amount = sa.Column(sa.Double(precision=2), nullable=False)
-    fixed_amount = sa.Column(sa.Double(precision=2), nullable=False)
+    discount_amount = sa.Column(sa.Double(precision=2), nullable=False)
 
     general_public = sa.Column(sa.Boolean, default=False, nullable=False)
     first_purchase = sa.Column(sa.Boolean, default=False, nullable=False)
