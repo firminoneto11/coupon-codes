@@ -27,7 +27,7 @@ def get_asgi_application() -> FastAPI:
     application.on_event("startup")(startup)
     application.on_event("shutdown")(shutdown)
 
-    [application.include_router(router=router, prefix="api/") for router in routers]
+    [application.include_router(router=router, prefix="/api") for router in routers]
 
     return application
 
