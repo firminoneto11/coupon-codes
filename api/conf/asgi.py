@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from conf import settings
+from shared.database import database
 
 from ..middleware import (
     allowed_hosts_middleware_configuration,
@@ -10,11 +11,11 @@ from .router import routers
 
 
 async def startup() -> None:
-    pass
+    database.init(url=settings.ASYNCPG_URL)
 
 
 async def shutdown() -> None:
-    pass
+    await database.close()
 
 
 def get_asgi_application() -> FastAPI:
