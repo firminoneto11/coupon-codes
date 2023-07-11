@@ -1,17 +1,18 @@
-from pathlib import Path
+from pathlib import Path as _Path
 
-from dynaconf import Dynaconf, Validator
+from dynaconf import Dynaconf as _Dynaconf
+from dynaconf import Validator as _Validator
 
-envs = Dynaconf(
+envs = _Dynaconf(
     envvar_prefix="CC",
     load_dotenv=True,
     validators=[
-        Validator("ASGI_APP", default="api.conf.asgi:app"),
-        Validator("DEBUG", cast=bool),
+        _Validator("ASGI_APP", default="api.conf.asgi:app"),
+        _Validator("DEBUG", cast=bool),
     ],
 )
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = _Path(__file__).resolve().parent.parent.parent
 
 ASYNCPG_URL = envs.asyncpg_url
 

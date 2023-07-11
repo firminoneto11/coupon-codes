@@ -1,3 +1,5 @@
+from typing import Self
+
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -34,11 +36,11 @@ class DBConnectionHandler:
             raise ValueError("Session maker is None. Can not proceed.")
         return self._session_maker
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> Self:
         self.db_session = self.session_maker()
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
         await self.db_session.close_all()
         del self.db_session
 
