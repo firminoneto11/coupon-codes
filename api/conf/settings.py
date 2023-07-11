@@ -24,3 +24,5 @@ APP_TITLE = "Coupon Codes"
 ALLOWED_HOSTS = envs.allowed_hosts.split(", ")
 
 ALLOWED_ORIGINS = envs.allowed_origins.split(", ")
+
+APPS = ["core"]

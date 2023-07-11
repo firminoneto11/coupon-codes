@@ -7,7 +7,7 @@ from ..middleware import (
     allowed_hosts_middleware_configuration,
     cors_middleware_configuration,
 )
-from .router import routers
+from .routers import routers
 
 
 async def startup() -> None:
@@ -27,7 +27,7 @@ def get_asgi_application() -> FastAPI:
     application.on_event("startup")(startup)
     application.on_event("shutdown")(shutdown)
 
-    [application.include_router(router=router) for router in routers]
+    [application.include_router(router=router, prefix="api/") for router in routers]
 
     return application
 

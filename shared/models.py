@@ -8,10 +8,10 @@ from .utils import utcnow
 if TYPE_CHECKING:
     from sqlalchemy.orm.decl_api import DeclarativeMeta
 
-    BaseDeclaration: DeclarativeMeta
+    _BaseDeclaration: DeclarativeMeta
 
 
-class TimeStampedBaseModel(BaseDeclaration := declarative_base()):
+class TimeStampedBaseModel(_BaseDeclaration := declarative_base()):
     __abstract__ = True
 
     id = sa.Column(sa.BigInteger, primary_key=True)
@@ -24,7 +24,3 @@ class TimeStampedBaseModel(BaseDeclaration := declarative_base()):
         server_default=sa.func.current_timestamp(),
         onupdate=utcnow,
     )
-
-    @property
-    def pk(self) -> int:
-        return self.id

@@ -22,6 +22,10 @@ def migrate() -> None:
     Creates all the tables into the database. Keep in mind that it drops the current tables and re-creates them.
     """
     install()
+
+    for imp in [f"from api.apps.{app} import models" for app in settings.APPS]:
+        exec(imp)
+
     aio.run(_run_migrate(db=database))
 
 

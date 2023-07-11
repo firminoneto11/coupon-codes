@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from .models import BaseDeclaration
+from .models import _BaseDeclaration
 
 
 class DBConnectionHandler:
@@ -40,11 +40,12 @@ class DBConnectionHandler:
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.db_session.close_all()
+        del self.db_session
 
     async def execute_ddl(self) -> None:
         async with self.engine.begin() as conn:
-            await conn.run_sync(BaseDeclaration.metadata.drop_all)
-            await conn.run_sync(BaseDeclaration.metadata.create_all)
+            await conn.run_sync(_BaseDeclaration.metadata.drop_all)
+            await conn.run_sync(_BaseDeclaration.metadata.create_all)
 
 
 database = DBConnectionHandler()
