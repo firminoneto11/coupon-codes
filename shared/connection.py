@@ -8,14 +8,16 @@ from sqlalchemy.ext.asyncio import (
 from .models import BaseDeclaration
 
 
-class AsyncDatabase:
+class DBConnectionHandler:
+    db_session: AsyncSession
+
     def __init__(self) -> None:
         self._engine = None
-        self._db_session = None
+        self._session_maker = None
 
     def init(self, url: str) -> None:
         self._engine = create_async_engine(url=url)
-        self._db_session = async_sessionmaker(self.engine, expire_on_commit=False)
+        self._session_maker = async_sessionmaker(self.engine, expire_on_commit=False)
 
     async def close(self) -> None:
         await self.engine.dispose()
@@ -27,10 +29,17 @@ class AsyncDatabase:
         return self._engine
 
     @property
-    def db_session(self) -> async_sessionmaker[AsyncSession]:
-        if self._db_session is None:
-            raise ValueError("DB Session is None. Can not proceed.")
-        return self._db_session
+    def session_maker(self) -> async_sessionmaker[AsyncEngine]:
+        if self._session_maker is None:
+            raise ValueError("Session maker is None. Can not proceed.")
+        return self._session_maker
+
+    async def __aenter__(self):
+        self.db_session = self.session_maker()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.db_session.close_all()
 
     async def execute_ddl(self) -> None:
         async with self.engine.begin() as conn:
@@ -38,10 +47,4 @@ class AsyncDatabase:
             await conn.run_sync(BaseDeclaration.metadata.create_all)
 
 
-async def database_access():
-    async with database.db_session() as db_session:
-        async with db_session.begin():
-            yield db_session
-
-
-database = AsyncDatabase()
+database = DBConnectionHandler()

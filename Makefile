@@ -38,3 +38,6 @@ migrate:
 
 dev:
 	python main.py runserver
+
+containers:
+	docker start cc-database

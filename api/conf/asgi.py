@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from conf import settings
-from shared.database import database
+from shared.connection import database
 
 from ..middleware import (
     allowed_hosts_middleware_configuration,
