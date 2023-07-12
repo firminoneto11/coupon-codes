@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - ../docker-volumes/coupon-codes-data:/var/lib/postgresql/data
+    ports:
+      - 10200:5432
+    env_file:
+      - postgres.env
+    container_name: cc-database
