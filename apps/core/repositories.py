@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from sqlalchemy import func, select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from .exceptions import AlreadyRegisteredException
 from .models import Coupons, Redemptions
@@ -62,8 +63,13 @@ class RedemptionsRepository:
         async with self.db_session as ses:
             ses.add(redemption)
             await ses.commit()
-            await ses.refresh(redemption)
-            return redemption
+            return await ses.scalar(
+                (
+                    select(Redemptions)
+                    .where(Redemptions.id == redemption.id)
+                    .options(joinedload(Redemptions.coupon))
+                )
+            )
 
     async def count_redemptions(self, coupon_id: int) -> int:
         stmt = (

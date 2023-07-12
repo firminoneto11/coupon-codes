@@ -40,6 +40,19 @@ class BaseCouponSchema(BaseModel):
             raise ValueError("The unix timestamp provided is set to a past date!")
         return expiration_date
 
+    @validator("first_purchase_only")
+    def validate_first_purchase_only(cls, first_purchase_only: bool, values: dict):
+        if (
+            values["type"] == DiscountTypesEnum.FIXED_AMOUNT_FIRST_PURCHASE
+            and not first_purchase_only
+        ):
+            raise ValueError(
+                f"When the coupon's type is {values['type']} the value for the"
+                f"'first_purchase_only' field has to be true"
+            )
+
+        return first_purchase_only
+
     @validator("available_for_general_public")
     def validate_available_for_general_public(
         cls, available_for_general_public: bool, values: dict
@@ -49,8 +62,10 @@ class BaseCouponSchema(BaseModel):
             and not available_for_general_public
         ):
             raise ValueError(
-                f"When the type is {values['type']} the value for 'available_for_general_public' has to be true"
+                f"When the coupon's type is {values['type']} the value for the"
+                f"'available_for_general_public' field has to be true"
             )
+
         return available_for_general_public
 
     def to_dict(self) -> dict:

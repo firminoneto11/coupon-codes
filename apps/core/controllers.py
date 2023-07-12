@@ -20,6 +20,9 @@ from .utils import is_redeemable, redeem
 CommonDep = Annotated[AsyncSession, Depends(make_db_session)]
 
 
+# TODO: Check the datetimes
+
+
 async def register_coupon(db_session: CommonDep, data: BaseCouponSchema) -> CouponSchema:
     repo = CouponRepository(db_session=db_session)
 

@@ -29,40 +29,23 @@ async def is_redeemable(
         )
 
 
-def apply_discount(coupon: Coupons, data: RedemptionSchemaIn) -> float:
-    match coupon.type:
-        case DiscountTypesEnum.PERCENTAGE:
-            discount = data.total_purchase_amount * (coupon.discount_amount / 100)
-            return data.total_purchase_amount - discount
-
-        case DiscountTypesEnum.FIXED_AMOUNT_GENERAL_PUBLIC:
-            return data.total_purchase_amount - coupon.discount_amount
-
-        case DiscountTypesEnum.FIXED_AMOUNT_FIRST_PURCHASE:
-            if not data.is_first_purchase:
-                raise HTTPException(
-                    status_code=400,
-                    detail="This coupon is available for the first purchase only",
-                )
-            return data.total_purchase_amount - coupon.discount_amount
-
-        case _:
-            raise HTTPException(status_code=400, detail="Coupon has an invalid discount type")
-
-
 async def redeem(
     coupon: Coupons, repo: RedemptionsRepository, data: RedemptionSchemaIn
 ) -> Redemptions:
-    total_amount_with_discount = apply_discount(coupon=coupon, data=data)
+    match coupon.type:
+        case DiscountTypesEnum.PERCENTAGE:
+            discount = data.total_purchase_amount * (coupon.discount_amount / 100)
+            total_amount_with_discount = data.total_purchase_amount - discount
+        case _:
+            total_amount_with_discount = data.total_purchase_amount - coupon.discount_amount
 
-    el = await repo.create(
+    redeemed_coupon = await repo.create(
         coupon_id=coupon.id,
         total_purchase_amount=data.total_purchase_amount,
         total_amount_with_discount=total_amount_with_discount,
         is_first_purchase=data.is_first_purchase,
     )
 
-    print(dir(el), el)
-    print(el.coupon)
+    redeemed_coupon.coupon.prepare_to_export()
 
-    return el
+    return redeemed_coupon
