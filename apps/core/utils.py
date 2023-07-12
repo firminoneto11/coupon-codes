@@ -23,13 +23,13 @@ async def is_redeemable(
             detail=f"The minimum purchase amount for this coupon is ${coupon.minimum_purchase_amount}",
         )
 
-
-def apply_discount(coupon: Coupons, data: RedemptionSchemaIn) -> float:
     if (coupon.first_purchase_only) and (not data.is_first_purchase):
         raise HTTPException(
             status_code=400, detail="This coupon is available for the first purchase only"
         )
 
+
+def apply_discount(coupon: Coupons, data: RedemptionSchemaIn) -> float:
     match coupon.type:
         case DiscountTypesEnum.PERCENTAGE:
             discount = data.total_purchase_amount * (coupon.discount_amount / 100)
