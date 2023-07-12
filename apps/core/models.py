@@ -18,6 +18,7 @@ class Redemptions(TimeStampedBaseModel):
 
     coupon_id: int = sa.Column(sa.BigInteger, sa.ForeignKey("coupons.id"), nullable=False)
     total_purchase_amount: float = sa.Column(sa.Double(precision=2), nullable=False)
+    total_amount_with_discount: float = sa.Column(sa.Double(precision=2), nullable=False)
     is_first_purchase: bool = sa.Column(sa.Boolean, nullable=False)
 
 
@@ -33,8 +34,8 @@ class Coupons(TimeStampedBaseModel):
     minimum_purchase_amount: float = sa.Column(sa.Double(precision=2), nullable=False)
     discount_amount: float = sa.Column(sa.Double(precision=2), nullable=False)
 
-    general_public: bool = sa.Column(sa.Boolean, default=False, nullable=False)
-    first_purchase: bool = sa.Column(sa.Boolean, default=False, nullable=False)
+    available_for_general_public: bool = sa.Column(sa.Boolean, default=False, nullable=False)
+    first_purchase_only: bool = sa.Column(sa.Boolean, default=False, nullable=False)
 
     redemptions = relationship(Redemptions, backref="coupon")
 

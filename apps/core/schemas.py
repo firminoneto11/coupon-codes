@@ -24,8 +24,8 @@ class BaseCouponSchema(BaseModel):
     minimum_purchase_amount: float
     discount_amount: float
 
-    general_public: bool
-    first_purchase: bool
+    first_purchase_only: bool
+    available_for_general_public: bool
 
     @staticmethod
     def convert_into_datetime(expiration_date: int) -> datetime:
@@ -40,6 +40,19 @@ class BaseCouponSchema(BaseModel):
             raise ValueError("The unix timestamp provided is set to a past date!")
         return expiration_date
 
+    @validator("available_for_general_public")
+    def validate_available_for_general_public(
+        cls, available_for_general_public: bool, values: dict
+    ) -> bool:
+        if (
+            values["type"] == DiscountTypesEnum.FIXED_AMOUNT_GENERAL_PUBLIC
+            and not available_for_general_public
+        ):
+            raise ValueError(
+                f"When the type is {values['type']} the value for 'available_for_general_public' has to be true"
+            )
+        return available_for_general_public
+
     def to_dict(self) -> dict:
         data = self.model_dump()
         data["expiration_date"] = self.convert_into_datetime(self.expiration_date)
@@ -52,6 +65,16 @@ class CouponSchema(BaseCouponSchema):
     updated_at: datetime
 
 
-class RedemptionSchema(BaseModel):
+class RedemptionSchemaIn(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     total_purchase_amount: float
     is_first_purchase: bool
+
+
+class RedemptionSchemaOut(RedemptionSchemaIn):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+    total_amount_with_discount: float
+    coupon: CouponSchema

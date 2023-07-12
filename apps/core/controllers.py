@@ -9,7 +9,12 @@ from shared.logger import logger
 
 from .exceptions import AlreadyRegisteredException
 from .repositories import CouponRepository, RedemptionsRepository
-from .schemas import BaseCouponSchema, CouponSchema, RedemptionSchema
+from .schemas import (
+    BaseCouponSchema,
+    CouponSchema,
+    RedemptionSchemaIn,
+    RedemptionSchemaOut,
+)
 from .utils import is_redeemable, redeem
 
 CommonDep = Annotated[AsyncSession, Depends(make_db_session)]
@@ -31,7 +36,9 @@ async def register_coupon(db_session: CommonDep, data: BaseCouponSchema) -> Coup
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-async def consume_coupon(db_session: CommonDep, data: RedemptionSchema, coupon_code: str) -> dict:
+async def consume_coupon(
+    db_session: CommonDep, data: RedemptionSchemaIn, coupon_code: str
+) -> RedemptionSchemaOut:
     coupon_repo = CouponRepository(db_session=db_session)
     redemption_repo = RedemptionsRepository(db_session=db_session)
 
@@ -39,6 +46,5 @@ async def consume_coupon(db_session: CommonDep, data: RedemptionSchema, coupon_c
         raise HTTPException(status_code=404, detail=f"Coupon {coupon_code!r} not found")
 
     await is_redeemable(coupon=coupon, repo=redemption_repo, data=data)
-    await redeem(coupon=coupon, repo=redemption_repo, data=data)
 
-    return {"details": "Ok"}
+    return await redeem(coupon=coupon, repo=redemption_repo, data=data)
