@@ -33,10 +33,10 @@ up:
 down:
 	docker compose down
 
-updb:
+dbup:
 	docker compose -f docker-compose-dev.yaml up -d
 
-downdb:
+dbdown:
 	docker compose -f docker-compose-dev.yaml down
 
 migrate:

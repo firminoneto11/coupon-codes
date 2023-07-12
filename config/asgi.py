@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
 from conf import settings
@@ -10,22 +12,18 @@ from shared.connection import database
 from .routers import routers
 
 
-async def startup() -> None:
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> None:
     database.init(url=settings.ASYNCPG_URL)
-
-
-async def shutdown() -> None:
+    yield
     await database.close()
 
 
 def get_asgi_application() -> FastAPI:
-    application = FastAPI(debug=settings.DEBUG, title=settings.APP_TITLE)
+    application = FastAPI(debug=settings.DEBUG, title=settings.APP_TITLE, lifespan=lifespan)
 
     application.add_middleware(**allowed_hosts_middleware_configuration)
     application.add_middleware(**cors_middleware_configuration)
-
-    application.on_event("startup")(startup)
-    application.on_event("shutdown")(shutdown)
 
     [application.include_router(router=router, prefix="/api") for router in routers]
 
