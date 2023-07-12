@@ -1,11 +1,9 @@
-from traceback import format_exc
 from typing import Annotated
 
 from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.connection import make_db_session
-from shared.logger import logger
 
 from .exceptions import AlreadyRegisteredException
 from .repositories import CouponRepository, RedemptionsRepository
@@ -20,23 +18,18 @@ from .utils import is_redeemable, redeem
 CommonDep = Annotated[AsyncSession, Depends(make_db_session)]
 
 
-# TODO: Check the datetimes
-
-
 async def register_coupon(db_session: CommonDep, data: BaseCouponSchema) -> CouponSchema:
     repo = CouponRepository(db_session=db_session)
 
     try:
         coupon = await repo.create(**data.to_dict())
-        coupon.prepare_to_export()
-        return coupon
     except AlreadyRegisteredException:
         raise HTTPException(
             status_code=400, detail="The code provided is registered in the database already"
         )
-    except:
-        await logger.error(format_exc())
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+
+    coupon.prepare_to_export()
+    return coupon
 
 
 async def consume_coupon(
