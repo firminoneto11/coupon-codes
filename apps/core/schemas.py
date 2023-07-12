@@ -50,3 +50,8 @@ class CouponSchema(BaseCouponSchema):
     id: int
     created_at: datetime
     updated_at: datetime
+
+
+class RedemptionSchema(BaseModel):
+    total_purchase_amount: float
+    is_first_purchase: bool

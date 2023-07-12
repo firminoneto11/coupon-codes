@@ -8,9 +8,9 @@ from shared.connection import make_db_session
 from shared.logger import logger
 
 from .exceptions import AlreadyRegisteredException
-from .repositories import CouponRepository
-from .schemas import BaseCouponSchema, CouponSchema
-from .utils import is_redeemable
+from .repositories import CouponRepository, RedemptionsRepository
+from .schemas import BaseCouponSchema, CouponSchema, RedemptionSchema
+from .utils import is_redeemable, redeem
 
 CommonDep = Annotated[AsyncSession, Depends(make_db_session)]
 
@@ -31,11 +31,14 @@ async def register_coupon(db_session: CommonDep, data: BaseCouponSchema) -> Coup
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 
-async def consume_coupon(db_session: CommonDep, coupon_id: int) -> dict:
-    repo = CouponRepository(db_session=db_session)
+async def consume_coupon(db_session: CommonDep, data: RedemptionSchema, coupon_code: str) -> dict:
+    coupon_repo = CouponRepository(db_session=db_session)
+    redemption_repo = RedemptionsRepository(db_session=db_session)
 
-    if (coupon := await repo.get_by_id(coupon_id)) is None:
-        raise HTTPException(status_code=404, detail=f"Coupon of id {coupon_id} not found")
+    if (coupon := await coupon_repo.get_by_code(coupon_code)) is None:
+        raise HTTPException(status_code=404, detail=f"Coupon {coupon_code!r} not found")
 
-    if not (await is_redeemable(coupon=coupon)):
-        raise HTTPException(status_code=404, detail=f"Coupon of id {coupon_id} is not redeemable")
+    await is_redeemable(coupon=coupon, repo=redemption_repo, data=data)
+    await redeem(coupon=coupon, repo=redemption_repo, data=data)
+
+    return {"details": "Ok"}

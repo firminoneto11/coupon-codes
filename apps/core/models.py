@@ -38,5 +38,9 @@ class Coupons(TimeStampedBaseModel):
 
     redemptions = relationship(Redemptions, backref="coupon")
 
+    @property
+    def expiration_date_as_unix(self) -> int:
+        return floor(self.expiration_date.timestamp())
+
     def prepare_to_export(self) -> None:
-        self.expiration_date = floor(self.expiration_date.timestamp())
+        self.expiration_date = self.expiration_date_as_unix
