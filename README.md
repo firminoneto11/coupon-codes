@@ -36,7 +36,7 @@ A payload for the first endpoint would look like this:
   {
     "code": "coupon1",
     "type": "PERCENTAGE",
-    "expiration_date": 1720729598,
+    "expiration_date": 1720729598, // An unix timestamp in seconds
     "max_redemption_quota": 3,
     "minimum_purchase_amount": 100.0,
     "discount_amount": 10,
@@ -59,6 +59,22 @@ A payload for the first endpoint would look like this:
   }
 ]
 ```
+
+For the `type` prop, these are the possible enum values:
+
+```txt
+PERCENTAGE
+FIXED_AMOUNT_GENERAL_PUBLIC
+FIXED_AMOUNT_FIRST_PURCHASE
+```
+
+Also, there are some **validation rules**:
+
+- The date set in the `expiration_date` field can not be lower than the current timestamp
+
+- When the `type` is set to `FIXED_AMOUNT_FIRST_PURCHASE`, the value for the `first_purchase_only` field has to be true
+
+- When the `type` is set to `FIXED_AMOUNT_GENERAL_PUBLIC`, the value for the `available_for_general_public` field has to be true
 
 ### Second endpoint
 
