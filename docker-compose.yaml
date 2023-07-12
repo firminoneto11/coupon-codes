@@ -3,10 +3,16 @@ version: '3'
 services:
   db:
     image: postgres:15
-    volumes:
-      - ../docker-volumes/coupon-codes-data:/var/lib/postgresql/data
-    ports:
-      - 10200:5432
     env_file:
-      - postgres.env
+      - sample.env
     container_name: cc-database
+
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    container_name: coupon-codes-app

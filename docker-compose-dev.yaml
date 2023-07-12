@@ -8,5 +8,5 @@ services:
     ports:
       - 10200:5432
     env_file:
-      - postgres.env
+      - ./.env
     container_name: cc-database

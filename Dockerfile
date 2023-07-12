@@ -6,10 +6,11 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 COPY requirements/ /app/requirements/
+COPY sample.env /app/.env
 
 RUN pip install --no-cache-dir --upgrade pip setuptools
 RUN pip install --no-cache-dir -r requirements/prod.txt
 
 COPY . .
 
-CMD [ "./startup.sh" ]
+CMD [ "sh", "startup.sh" ]

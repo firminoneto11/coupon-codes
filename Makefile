@@ -28,10 +28,16 @@ hcov:
 	python -m http.server -d .coverage/html-report 5500
 
 up:
-	docker compose up -d
+	docker compose up --build
 
 down:
 	docker compose down
+
+updb:
+	docker compose -f docker-compose-dev.yaml up -d
+
+downdb:
+	docker compose -f docker-compose-dev.yaml down
 
 migrate:
 	python main.py migrate
