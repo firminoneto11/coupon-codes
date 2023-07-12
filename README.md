@@ -68,7 +68,7 @@ POST http://localhost:8000/api/v1/coupons/:coupon_code/
 
 A payload for the second endpoint would look like this:
 
-```json
+```jsonc
 [
   // Request
   {
