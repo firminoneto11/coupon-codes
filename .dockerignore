@@ -3,3 +3,4 @@ README.md
 Dockerfile
 docker-compose.yaml
 docker-compose-dev.yaml
+.env

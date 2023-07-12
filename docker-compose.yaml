@@ -5,7 +5,7 @@ services:
     image: postgres:15
     env_file:
       - sample.env
-    container_name: cc-database
+    container_name: coupon-codes-database
 
   app:
     build:
