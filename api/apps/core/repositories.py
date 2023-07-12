@@ -1,7 +1,10 @@
 from dataclasses import dataclass
 
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
+from .exceptions import AlreadyRegisteredException
 from .models import Coupons, Redemptions
 
 
@@ -15,11 +18,25 @@ class CouponRepository:
 
     async def create(self, /, **kwargs) -> Coupons:
         coupon = Coupons(**kwargs)
+
+        if await self.is_already_registered(code=coupon.code):
+            raise AlreadyRegisteredException()
+
         async with self.db_session as ses:
             ses.add(coupon)
             await ses.commit()
             await ses.refresh(coupon)
             return coupon
+
+    async def is_already_registered(self, code: str) -> bool:
+        stmt = select(Coupons).filter(Coupons.code == code)
+        async with self.db_session as ses:
+            try:
+                if (await ses.execute(stmt)).scalar():
+                    return True
+                return False
+            except NoResultFound:
+                return False
 
 
 @dataclass

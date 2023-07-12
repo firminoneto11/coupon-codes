@@ -1,5 +1,3 @@
-from contextlib import asynccontextmanager
-
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -42,13 +40,16 @@ class DBConnectionHandler:
             await conn.run_sync(_BaseDeclaration.metadata.create_all)
 
 
-@asynccontextmanager
 async def make_db_session():
     db_session = database.session_maker()
     try:
         yield db_session
+    except Exception as exc:
+        await db_session.rollback()
+        raise exc
     finally:
         await db_session.close()
+        del db_session
 
 
 database = DBConnectionHandler()

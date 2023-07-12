@@ -1,5 +1,5 @@
-from .repositories import CouponRepository, RedemptionsRepository
+from .models import Coupons
 
 
-async def is_redeemable(coupon_id: int) -> bool:
+async def is_redeemable(coupon: Coupons) -> bool:
     pass
