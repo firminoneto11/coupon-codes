@@ -9,4 +9,6 @@ services:
       - 10200:5432
     env_file:
       - ./.env
+    environment:
+      - TZ=UTC
     container_name: cc-database

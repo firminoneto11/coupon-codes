@@ -5,6 +5,8 @@ services:
     image: postgres:15
     env_file:
       - sample.env
+    environment:
+      - TZ=UTC
     container_name: coupon-codes-database
 
   app:
