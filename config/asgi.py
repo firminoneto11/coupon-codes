@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 
 from conf import settings
-from shared.connection import database
-
-from ..middleware import (
+from middleware import (
     allowed_hosts_middleware_configuration,
     cors_middleware_configuration,
 )
+from shared.connection import database
+
 from .routers import routers
 
 

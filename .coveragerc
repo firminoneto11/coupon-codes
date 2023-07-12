@@ -2,6 +2,7 @@
 omit =
     *test*
     main.py
+    conf.py
     *conftest.py
 data_file = .coverage/coverage
 branch = True

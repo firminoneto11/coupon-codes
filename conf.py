@@ -1,5 +1,5 @@
 def _get_settings_module():
-    from api.conf import settings
+    from config import settings
 
     return settings
 

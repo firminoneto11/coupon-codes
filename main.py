@@ -23,7 +23,7 @@ def migrate() -> None:
     """
     install()
 
-    for imp in [f"from api.apps.{app} import models" for app in settings.APPS]:
+    for imp in [f"from apps.{app} import models" for app in settings.APPS]:
         exec(imp)
 
     aio.run(_run_migrate(db=database))

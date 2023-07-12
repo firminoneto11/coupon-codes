@@ -7,7 +7,7 @@ envs = _Dynaconf(
     envvar_prefix="CC",
     load_dotenv=True,
     validators=[
-        _Validator("ASGI_APP", default="api.conf.asgi:app"),
+        _Validator("ASGI_APP", default="config.asgi:app"),
         _Validator("DEBUG", cast=bool),
     ],
 )
