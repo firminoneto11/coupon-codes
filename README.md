@@ -12,7 +12,7 @@ If you have the `make` command available you can simply:
 $ make up
 ```
 
-Or
+Or if you don't, execute these:
 
 ```bash
 $ docker compose up --build
@@ -128,13 +128,13 @@ POST http://localhost:8000/api/v1/coupons/coupon1/
 
 The project has some tests implemented. To run them, you can do the following:
 
-- **1**: If you have the `make` command available you can simply:
+- If you have the `make` command available you can simply:
 
 ```bash
 $ make test
 ```
 
-Or
+- Or if you don't, execute these:
 
 ```bash
 $ docker compose -f docker-compose-test.yaml up --build
