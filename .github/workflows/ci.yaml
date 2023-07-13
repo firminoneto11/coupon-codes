@@ -1,0 +1,35 @@
+name: CI
+
+env:
+  CC_ASYNCPG_URL: "${{secrets.CC_ASYNCPG_URL}}"
+  CC_DEBUG: 1
+  CC_ALLOWED_HOSTS: "*"
+  CC_ALLOWED_ORIGINS: "*"
+  POSTGRES_USER: "${{secrets.POSTGRES_USER}}"
+  POSTGRES_PASSWORD: "${{secrets.POSTGRES_PASSWORD}}"
+  POSTGRES_DB: "${{secrets.POSTGRES_DB}}"
+  DB_HOST: "${{secrets.DB_HOST}}"
+  DB_PORT: "${{secrets.DB_PORT}}"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: make itest
+
+      - name: Run tests with pytest and code coverage
+        run: make cov
