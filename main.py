@@ -11,7 +11,7 @@ cli = Typer()
 
 
 async def _run_migrate(db: DBConnectionHandler) -> None:
-    db.init(settings.ASYNCPG_URL)
+    db.init()
     await db.execute_ddl()
     await db.close()
 

@@ -5,6 +5,8 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
+from conf import settings
+
 from .models import _BaseDeclaration
 
 
@@ -15,8 +17,14 @@ class DBConnectionHandler:
         self._engine = None
         self._session_maker = None
 
-    def init(self, url: str) -> None:
-        self._engine = create_async_engine(url=url)
+    def init(self, sqlite: bool = False) -> None:
+        if sqlite:
+            self._engine = create_async_engine(
+                url=settings.AIOSQLITE_URL, connect_args={"check_same_thread": False}
+            )
+        else:
+            self._engine = create_async_engine(url=settings.ASYNCPG_URL)
+
         self._session_maker = async_sessionmaker(self.engine, expire_on_commit=False)
 
     async def close(self) -> None:

@@ -16,6 +16,8 @@ BASE_DIR = _Path(__file__).resolve().parent.parent.parent
 
 ASYNCPG_URL = envs.asyncpg_url
 
+AIOSQLITE_URL = "sqlite+aiosqlite:///:memory:"
+
 ASGI_APP = envs.asgi_app
 
 DEBUG = envs.debug

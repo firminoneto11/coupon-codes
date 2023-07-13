@@ -47,3 +47,7 @@ dev:
 
 containers:
 	docker start cc-database
+
+test:
+	docker compose -f docker-compose-test.yaml up --build
+	docker rm coupon-codes-test-app

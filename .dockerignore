@@ -4,3 +4,5 @@ Dockerfile
 docker-compose.yaml
 docker-compose-dev.yaml
 .env
+.coverage
+.pytest_cache

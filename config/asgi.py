@@ -14,7 +14,7 @@ from .routers import routers
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> None:
-    database.init(url=settings.ASYNCPG_URL)
+    database.init()
     yield
     await database.close()
 
