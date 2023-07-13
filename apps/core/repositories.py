@@ -13,13 +13,6 @@ from .models import Coupons, Redemptions
 class CouponRepository:
     db_session: AsyncSession
 
-    async def get_by_id(self, id: int) -> Coupons | None:
-        async with self.db_session as ses:
-            try:
-                return await ses.get(Coupons, id)
-            except NoResultFound:
-                return
-
     async def get_by_code(self, coupon_code: str) -> Coupons | None:
         async with self.db_session as ses:
             try:
@@ -53,10 +46,6 @@ class CouponRepository:
 @dataclass
 class RedemptionsRepository:
     db_session: AsyncSession
-
-    async def get_by_id(self, id: int) -> Redemptions | None:
-        async with self.db_session as ses:
-            return await ses.get(Redemptions, id)
 
     async def create(self, /, **kwargs) -> Redemptions:
         redemption = Redemptions(**kwargs)
