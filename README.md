@@ -121,3 +121,22 @@ Note that the `:coupon_code` path parameter is just the coupon code. Say you hav
 ```txt
 POST http://localhost:8000/api/v1/coupons/coupon1/
 ```
+
+---
+
+## Testing
+
+The project has some tests implemented. To run them, you can do the following:
+
+- **1**: If you have the `make` command available you can simply:
+
+```bash
+$ make test
+```
+
+Or
+
+```bash
+$ docker compose -f docker-compose-test.yaml up --build
+$ docker rm coupon-codes-test-app
+```
