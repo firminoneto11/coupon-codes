@@ -14,7 +14,7 @@ def test_base_coupon_schema_convert_into_datetime(create_coupon_data: dict) -> N
     expected_error_message = f"Invalid unix timestamp: {schema.expiration_date!r}"
 
     mock = MagicMock()
-    mock.utcfromtimestamp = MagicMock(side_effect=ValueError())
+    mock.fromtimestamp = MagicMock(side_effect=ValueError())
     with patch(target="apps.core.schemas.datetime", new=mock):
         with raises(ValueError) as exc_info:
             schema.convert_into_datetime(schema.expiration_date)

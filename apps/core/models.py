@@ -37,7 +37,7 @@ class Coupons(TimeStampedBaseModel):
     available_for_general_public: bool = sa.Column(sa.Boolean, default=False, nullable=False)
     first_purchase_only: bool = sa.Column(sa.Boolean, default=False, nullable=False)
 
-    redemptions = relationship(Redemptions, backref="coupon")
+    redemptions = relationship(Redemptions, backref="coupon", cascade="all, delete, delete-orphan")
 
     @property
     def expiration_date_as_unix(self) -> int:

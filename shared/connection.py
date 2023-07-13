@@ -18,12 +18,12 @@ class DBConnectionHandler:
         self._session_maker = None
 
     def init(self, sqlite: bool = False) -> None:
-        if sqlite:
+        if sqlite:  # pragma: nobranch
             self._engine = create_async_engine(
                 url=settings.AIOSQLITE_URL, connect_args={"check_same_thread": False}
             )
         else:
-            self._engine = create_async_engine(url=settings.ASYNCPG_URL)
+            self._engine = create_async_engine(url=settings.ASYNCPG_URL)  # pragma: no cover
 
         self._session_maker = async_sessionmaker(self.engine, expire_on_commit=False)
 

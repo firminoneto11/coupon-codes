@@ -30,7 +30,7 @@ class BaseCouponSchema(BaseModel):
     @staticmethod
     def convert_into_datetime(expiration_date: int) -> datetime:
         try:
-            return datetime.utcfromtimestamp(expiration_date).replace(tzinfo=timezone.utc)
+            return datetime.fromtimestamp(expiration_date, tz=timezone.utc)
         except:
             raise ValueError(f"Invalid unix timestamp: {expiration_date!r}")
 

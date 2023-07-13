@@ -1,4 +1,5 @@
 from asyncio import new_event_loop, set_event_loop
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from httpx import AsyncClient
 from pytest import fixture
@@ -6,6 +7,7 @@ from uvloop import install
 
 from conf import settings
 from config.asgi import get_asgi_application
+from shared.connection import database
 
 settings.TEST_MODE = True
 
@@ -31,5 +33,23 @@ def event_loop():
 
 @fixture(scope="session")
 async def client():
-    async with AsyncClient(app=get_asgi_application(), base_url="http://test") as client:
-        yield client
+    mock = MagicMock()
+    mock.init = MagicMock()
+    mock.close = AsyncMock()
+    with patch(target="config.asgi.database", new=mock):
+        async with AsyncClient(app=get_asgi_application(), base_url="http://test") as client:
+            yield client
+
+
+@fixture(scope="session", autouse=True)
+async def connection():
+    for imp in [f"from apps.{app} import models" for app in settings.APPS]:
+        exec(imp)
+
+    database.init(sqlite=True)
+    await database.execute_ddl()
+
+    try:
+        yield database
+    finally:
+        await database.close()

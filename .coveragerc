@@ -10,6 +10,7 @@ branch = True
 [report]
 skip_covered = True
 precision = 2
+fail_under = 80
 exclude_also = 
     if TYPE_CHECKING:
 

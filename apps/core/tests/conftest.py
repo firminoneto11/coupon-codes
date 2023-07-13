@@ -15,3 +15,11 @@ def create_coupon_data() -> dict:
         "first_purchase_only": False,
         "available_for_general_public": False,
     }
+
+
+@fixture
+def consume_coupon_data() -> dict:
+    return {
+        "total_purchase_amount": 1000,
+        "is_first_purchase": True,
+    }
