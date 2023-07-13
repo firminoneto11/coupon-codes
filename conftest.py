@@ -4,7 +4,10 @@ from httpx import AsyncClient
 from pytest import fixture
 from uvloop import install
 
+from conf import settings
 from config.asgi import get_asgi_application
+
+settings.TEST_MODE = True
 
 
 @fixture(scope="session", autouse=True)

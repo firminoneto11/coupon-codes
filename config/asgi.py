@@ -14,7 +14,7 @@ from .routers import routers
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> None:
-    database.init()
+    database.init(sqlite=settings.TEST_MODE)
     yield
     await database.close()
 
