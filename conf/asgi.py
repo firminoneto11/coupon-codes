@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from config import settings
+from conf import settings
 from middleware import (
     allowed_hosts_middleware_configuration,
     cors_middleware_configuration,

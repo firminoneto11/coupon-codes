@@ -1,6 +1,6 @@
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
-from config import settings
+from conf import settings
 
 allowed_hosts_middleware_configuration = {
     "middleware_class": TrustedHostMiddleware,

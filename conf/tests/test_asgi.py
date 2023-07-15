@@ -1,6 +1,6 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from config.asgi import lifespan
+from conf.asgi import lifespan
 
 
 async def test_lifespan() -> None:
@@ -8,7 +8,7 @@ async def test_lifespan() -> None:
     mock.init = MagicMock()
     mock.close = AsyncMock()
 
-    with patch(target="config.asgi.conn", new=mock):
+    with patch(target="conf.asgi.conn", new=mock):
         async with lifespan(app=None):
             pass
 

@@ -5,8 +5,8 @@ from httpx import AsyncClient
 from pytest import fixture
 from uvloop import install
 
-from config import settings
-from config.asgi import get_asgi_application
+from conf import settings
+from conf.asgi import get_asgi_application
 from shared.connection import conn
 
 
@@ -34,7 +34,7 @@ async def client():
     mock = MagicMock()
     mock.init = MagicMock()
     mock.close = AsyncMock()
-    with patch(target="config.asgi.conn", new=mock):
+    with patch(target="conf.asgi.conn", new=mock):
         async with AsyncClient(app=get_asgi_application(), base_url="http://test") as client:
             yield client
 

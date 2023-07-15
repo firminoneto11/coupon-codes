@@ -4,7 +4,7 @@ from typer import Typer
 from uvicorn import run
 from uvloop import install
 
-from config import settings
+from conf import settings
 from shared.connection import conn
 
 cli = Typer()
