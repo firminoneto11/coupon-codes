@@ -8,10 +8,10 @@ from .utils import utcnow
 if TYPE_CHECKING:
     from sqlalchemy.orm.decl_api import DeclarativeMeta
 
-    _BaseDeclaration: DeclarativeMeta
+    BaseDeclaration: DeclarativeMeta
 
 
-class TimeStampedBaseModel(_BaseDeclaration := declarative_base()):
+class TimeStampedBaseModel(BaseDeclaration := declarative_base()):
     __abstract__ = True
 
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)

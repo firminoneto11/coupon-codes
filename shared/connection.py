@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from conf import settings
 
-from .models import _BaseDeclaration
+from .models import BaseDeclaration
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
@@ -59,8 +59,8 @@ class DBConnectionHandler:
 
     async def execute_ddl(self) -> None:
         async with self.engine.begin() as conn:
-            await conn.run_sync(_BaseDeclaration.metadata.drop_all)
-            await conn.run_sync(_BaseDeclaration.metadata.create_all)
+            await conn.run_sync(BaseDeclaration.metadata.drop_all)
+            await conn.run_sync(BaseDeclaration.metadata.create_all)
 
 
 conn = DBConnectionHandler()
