@@ -2,21 +2,21 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from conf import settings
+from config import settings
 from middleware import (
     allowed_hosts_middleware_configuration,
     cors_middleware_configuration,
 )
-from shared.connection import database
+from shared.connection import connection
 
 from .routers import routers
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> None:
-    database.init(sqlite=settings.TEST_MODE)
+    connection.init()
     yield
-    await database.close()
+    await connection.close()
 
 
 def get_asgi_application() -> FastAPI:

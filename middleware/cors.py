@@ -1,6 +1,6 @@
 from fastapi.middleware.cors import CORSMiddleware
 
-from conf import settings
+from config import settings
 
 cors_middleware_configuration = {
     "middleware_class": CORSMiddleware,

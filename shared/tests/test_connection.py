@@ -12,6 +12,6 @@ def test_connection_handler() -> None:
     assert str(exc_info.value) == "Engine is None. Can not proceed."
 
     with raises(ValueError) as exc_info:
-        local_conn.session_maker
+        local_conn.make_session
 
     assert str(exc_info.value) == "Session maker is None. Can not proceed."

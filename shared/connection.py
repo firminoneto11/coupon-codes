@@ -5,27 +5,25 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from conf import settings
+from config import settings
 
 from .models import _BaseDeclaration
 
 
 class DBConnectionHandler:
-    session: AsyncSession
-
     def __init__(self) -> None:
         self._engine = None
-        self._session_maker = None
+        self._make_session = None
 
     def init(self, sqlite: bool = False) -> None:
-        if sqlite:  # pragma: nobranch
+        if sqlite:  # pragma: no branch
             self._engine = create_async_engine(
                 url=settings.AIOSQLITE_URL, connect_args={"check_same_thread": False}
             )
         else:
             self._engine = create_async_engine(url=settings.ASYNCPG_URL)  # pragma: no cover
 
-        self._session_maker = async_sessionmaker(self.engine, expire_on_commit=False)
+        self._make_session = async_sessionmaker(self.engine, expire_on_commit=False)
 
     async def close(self) -> None:
         await self.engine.dispose()
@@ -37,10 +35,10 @@ class DBConnectionHandler:
         return self._engine
 
     @property
-    def session_maker(self) -> async_sessionmaker[AsyncSession]:
-        if self._session_maker is None:
+    def make_session(self) -> async_sessionmaker[AsyncSession]:
+        if self._make_session is None:
             raise ValueError("Session maker is None. Can not proceed.")
-        return self._session_maker
+        return self._make_session
 
     async def execute_ddl(self) -> None:
         async with self.engine.begin() as conn:
@@ -49,7 +47,7 @@ class DBConnectionHandler:
 
 
 async def make_db_session():
-    db_session = database.session_maker()
+    db_session = connection.make_session()
     try:
         yield db_session
     except Exception as exc:
@@ -60,4 +58,4 @@ async def make_db_session():
         del db_session
 
 
-database = DBConnectionHandler()
+connection = DBConnectionHandler()
