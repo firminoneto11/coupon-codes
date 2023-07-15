@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from shared.connection import make_db_session
+from shared.connection import conn
 
 from .exceptions import AlreadyRegisteredException
 from .repositories import CouponRepository, RedemptionsRepository
@@ -15,7 +15,7 @@ from .schemas import (
 )
 from .utils import is_redeemable, redeem
 
-CommonDep = Annotated[AsyncSession, Depends(make_db_session)]
+CommonDep = Annotated[AsyncSession, Depends(conn.get_db_session)]
 
 
 async def register_coupon(db_session: CommonDep, data: BaseCouponSchema) -> CouponSchema:

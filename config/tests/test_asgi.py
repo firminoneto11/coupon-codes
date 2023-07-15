@@ -8,7 +8,7 @@ async def test_lifespan() -> None:
     mock.init = MagicMock()
     mock.close = AsyncMock()
 
-    with patch(target="config.asgi.connection", new=mock):
+    with patch(target="config.asgi.conn", new=mock):
         async with lifespan(app=None):
             pass
 

@@ -5,15 +5,15 @@ from uvicorn import run
 from uvloop import install
 
 from config import settings
-from shared.connection import connection
+from shared.connection import conn
 
 cli = Typer()
 
 
 async def _run_migrate() -> None:
-    connection.init()
-    await connection.execute_ddl()
-    await connection.close()
+    conn.init()
+    await conn.execute_ddl()
+    await conn.close()
 
 
 @cli.command()

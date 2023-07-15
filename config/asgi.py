@@ -7,16 +7,16 @@ from middleware import (
     allowed_hosts_middleware_configuration,
     cors_middleware_configuration,
 )
-from shared.connection import connection
+from shared.connection import conn
 
 from .routers import routers
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> None:
-    connection.init()
+    conn.init()
     yield
-    await connection.close()
+    await conn.close()
 
 
 def get_asgi_application() -> FastAPI:
