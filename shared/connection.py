@@ -49,9 +49,6 @@ class DBConnectionHandler:
         self._sessions_tracker.add(ses := self.make_session())
         try:
             yield ses
-        except Exception as exc:
-            await ses.rollback()
-            raise exc
         finally:
             self._sessions_tracker.remove(ses)
             await ses.close()

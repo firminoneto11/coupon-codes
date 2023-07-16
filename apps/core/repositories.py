@@ -27,10 +27,14 @@ class CouponRepository:
             raise AlreadyRegisteredException()
 
         async with self.db_session as ses:
-            ses.add(coupon)
-            await ses.commit()
-            await ses.refresh(coupon)
-            return coupon
+            try:
+                ses.add(coupon)
+                await ses.commit()
+                await ses.refresh(coupon)
+                return coupon
+            except Exception as exc:
+                await ses.rollback()
+                raise exc
 
     async def is_already_registered(self, code: str) -> bool:
         stmt = select(Coupons).filter(Coupons.code == code)
@@ -50,15 +54,19 @@ class RedemptionsRepository:
     async def create(self, /, **kwargs) -> Redemptions:
         redemption = Redemptions(**kwargs)
         async with self.db_session as ses:
-            ses.add(redemption)
-            await ses.commit()
-            return await ses.scalar(
-                (
-                    select(Redemptions)
-                    .where(Redemptions.id == redemption.id)
-                    .options(joinedload(Redemptions.coupon))
+            try:
+                ses.add(redemption)
+                await ses.commit()
+                return await ses.scalar(
+                    (
+                        select(Redemptions)
+                        .where(Redemptions.id == redemption.id)
+                        .options(joinedload(Redemptions.coupon))
+                    )
                 )
-            )
+            except Exception as exc:
+                await ses.rollback()
+                raise exc
 
     async def count_redemptions(self, coupon_id: int) -> int:
         stmt = (
