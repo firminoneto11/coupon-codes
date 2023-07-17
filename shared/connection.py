@@ -35,7 +35,7 @@ class DBConnectionHandler:
                 try:
                     await ses.execute(text("SELECT 1"))
                 except Exception as exc:
-                    raise Exception("Failed to connect to the database.") from exc
+                    raise ConnectionError("Failed to connect to the database.") from exc
 
     async def close(self) -> None:
         for ses in self._sessions_tracker:

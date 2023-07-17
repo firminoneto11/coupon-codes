@@ -31,7 +31,7 @@ async def test_connection_handler() -> None:
 async def test_ping_should_raise_exception() -> None:
     expected_error_message = "Failed to connect to the database."
     mock = MagicMock(side_effect=RuntimeError("A runtime error"))
-    with patch(target="shared.connection.text", new=mock), raises(Exception) as exc_info:
+    with patch(target="shared.connection.text", new=mock), raises(ConnectionError) as exc_info:
         await conn.ping()
 
     assert str(exc_info.value) == expected_error_message
