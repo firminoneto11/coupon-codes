@@ -17,4 +17,4 @@ echo "The PostgreSQL port is open and ready to accept connections!"
 
 python main.py migrate
 
-gunicorn config.asgi:app -w 1 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+gunicorn conf.asgi:app -w 1 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000

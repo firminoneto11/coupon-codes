@@ -5,15 +5,15 @@ from uvicorn import run
 from uvloop import install
 
 from conf import settings
-from shared.connection import DBConnectionHandler, database
+from shared.connection import conn
 
 cli = Typer()
 
 
-async def _run_migrate(db: DBConnectionHandler) -> None:
-    db.init()
-    await db.execute_ddl()
-    await db.close()
+async def _run_migrate() -> None:
+    conn.init()
+    await conn.execute_ddl()
+    await conn.close()
 
 
 @cli.command()
@@ -26,7 +26,7 @@ def migrate() -> None:
     for imp in [f"from apps.{app} import models" for app in settings.APPS]:
         exec(imp)
 
-    aio.run(_run_migrate(db=database))
+    aio.run(_run_migrate())
 
 
 @cli.command()

@@ -7,7 +7,7 @@ envs = _Dynaconf(
     envvar_prefix="CC",
     load_dotenv=True,
     validators=[
-        _Validator("ASGI_APP", default="config.asgi:app"),
+        _Validator("ASGI_APP", default="conf.asgi:app"),
         _Validator("DEBUG", cast=bool),
     ],
 )
@@ -29,5 +29,3 @@ ALLOWED_HOSTS = envs.allowed_hosts.split(", ")
 ALLOWED_ORIGINS = envs.allowed_origins.split(", ")
 
 APPS = ["core"]
-
-TEST_MODE = False

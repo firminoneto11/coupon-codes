@@ -6,10 +6,8 @@ from pytest import fixture
 from uvloop import install
 
 from conf import settings
-from config.asgi import get_asgi_application
-from shared.connection import database
-
-settings.TEST_MODE = True
+from conf.asgi import get_asgi_application
+from shared.connection import conn
 
 
 @fixture(scope="session", autouse=True)
@@ -36,7 +34,7 @@ async def client():
     mock = MagicMock()
     mock.init = MagicMock()
     mock.close = AsyncMock()
-    with patch(target="config.asgi.database", new=mock):
+    with patch(target="conf.asgi.conn", new=mock):
         async with AsyncClient(app=get_asgi_application(), base_url="http://test") as client:
             yield client
 
@@ -46,10 +44,11 @@ async def connection():
     for imp in [f"from apps.{app} import models" for app in settings.APPS]:
         exec(imp)
 
-    database.init(sqlite=True)
-    await database.execute_ddl()
+    conn.init(sqlite=True)
+    await conn.ping()
+    await conn.execute_ddl()
 
     try:
-        yield database
+        yield conn
     finally:
-        await database.close()
+        await conn.close()
