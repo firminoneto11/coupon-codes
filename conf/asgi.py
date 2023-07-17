@@ -15,6 +15,7 @@ from .routers import routers
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> None:
     conn.init()
+    await conn.ping()
     yield
     await conn.close()
 

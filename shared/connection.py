@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from conf import settings
@@ -27,6 +28,14 @@ class DBConnectionHandler:
             self._engine = create_async_engine(url=settings.ASYNCPG_URL)  # pragma: no cover
 
         self._make_session = async_sessionmaker(self.engine, expire_on_commit=False)
+
+    async def ping(self) -> None:
+        async for ses in self.get_db_session():
+            async with ses:
+                try:
+                    await ses.execute(text("SELECT 1"))
+                except Exception as exc:
+                    raise Exception("Failed to connect to the database.") from exc
 
     async def close(self) -> None:
         for ses in self._sessions_tracker:

@@ -45,6 +45,7 @@ async def connection():
         exec(imp)
 
     conn.init(sqlite=True)
+    await conn.ping()
     await conn.execute_ddl()
 
     try:
